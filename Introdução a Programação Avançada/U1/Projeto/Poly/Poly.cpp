@@ -1,8 +1,11 @@
 #include <iostream>
-#include <cmath>
+#include <cmath> //pow
 #include <fstream>
 #include <string>
+
 #include "poly.h"
+
+using namespace std;
 
 void Poly::cria(int g)
 {
@@ -17,7 +20,7 @@ void Poly::cria(int g)
 
 void Poly::destroi()
 {
-    this->getGrau() = 0;
+    this->grau = 0;
     if(this->coefs != nullptr)
     {
         delete[] this->coefs;
@@ -27,18 +30,18 @@ void Poly::destroi()
 
 void Poly::copia(const Poly &P)
 {
-    this->recriar(P.getGrau());    
+    this->recriar(P.getGrau());
     if(P.getGrau() >= 0) for(int i = 0; i <= P.getGrau(); i++) this->setCoef(i, P.getCoef(i));
 }
 
 int Poly::getGrau() const
 {
-    return this->grau();
+    return this->grau;
 }
 
-bool Poly::isZero() const 
+bool Poly::isZero() const
 {
-    return this->getGrau == 0 && this->coefs == nullptr;
+    return this->getGrau() == 0 && this->coefs == nullptr;
 }
 
 bool Poly::empty() const
@@ -65,7 +68,7 @@ double Poly::getValor(double x) const
 {
     if(this->empty()) return 0;
 
-    double valor = 0.0;    
+    double valor = 0.0;
     for(int i = 0; i <= this->getGrau(); i++) valor+= pow(x,i) * this->getCoef(i);
     return valor;
 }
@@ -104,7 +107,7 @@ istream &operator>>(istream &X, Poly &P)
     }
 
     Poly prov(P.getGrau());
-       
+
     for(int i = 0; i <= prov.getGrau(); i++)
     {
         double temp;
@@ -145,13 +148,13 @@ bool Poly::salvar(const string &caminho) const
 bool Poly::ler(const string &caminho) const
 {
     ifstream X(caminho);
-    
+
     if (X.fail() || !X.is_open())
     {
         X.close();
         return false;
     }
-    
+
     string key;
     X >> key;
     if(key != "POLY")
@@ -165,9 +168,9 @@ bool Poly::ler(const string &caminho) const
 
     if (prov.empty())
         for(int i = 0; i <= this->getGrau(); i++)
-        {   
+        {
             double coef;
-            X >> coef
+            X >> coef;
             if((i==0 && coef != 0.0) || i > 0) prov.setCoef(i, coef);
             else
             {
@@ -178,4 +181,29 @@ bool Poly::ler(const string &caminho) const
 
     X.close();
     return true;
+}
+
+Poly Poly::operator=(const Poly &P)
+{
+    Poly prov();
+    prov.recriar(P.getGrau());
+    prov.copia(P);
+    return prov;
+}
+
+Poly Poly::operator=(const Poly &&P)
+{
+    this->copia(P);
+    P.grau = 0;
+    P.coefs = nullptr;
+}
+
+double Poly::operator[](int indice)
+{
+    return this->getCoef(indice);
+}
+
+double Poly::operator()(double valor)
+{
+    return this->getValor(valor);
 }

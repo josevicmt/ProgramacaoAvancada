@@ -1,5 +1,12 @@
+#ifndef _POLY_H_
+#define _POLY_H_
+
+
 #include <iostream>
 #include <string>
+#include <fstream>
+
+using namespace std;
 
 class Poly
 {
@@ -31,11 +38,18 @@ class Poly
         bool empty() const;
         // Retorna true se grau = 0 e coefs = nullptr
         bool isZero() const;
-        
+
         /*Sobrecarga*/
-        inline Poly operator=(const Poly &P){this->recriar(P.getGrau()), this->copia(P)}
-        inline Poly operator[](int indice){this->getCoef(indice);};
-        inline Poly operator()(double valor){this->getValor(valor);};
+        Poly operator=(const Poly &P) const;
+        double operator[](int indice) const;
+        double operator()(double valor) const;
+        Poly operator+(const Poly &P) const;
+        Poly operator-(const Poly &P) const;
+        Poly operator-() const;
+        Poly operator*(const Poly &P) const;
+        Poly operator/(const Poly &P) const;
+        Poly operator%(const Poly &P) const;
+
 
         /*Leitura e Escrita*/
         friend ostream &operator<<(ostream &X, const Poly &P);
@@ -49,9 +63,12 @@ class Poly
         // Construtor especifico nao habilitado para conversao de tipo
         inline explicit Poly(int novoGrau){cria(novoGrau);};
         // Construtor especifico habilitado para conversao de tipo, polinomio de grau 0 com unico coeficiente sendo o valor que e convertido
-        inline Poly(int coefGrauZero){cria(0); setCoef(0, coefGrauZero);};
+        //jinline Poly(int coefGrauZero){cria(0);};
         // construtor por copia
-        inline Poly(const Poly &P){cria(P.getGrau); copia(P);};
+        inline Poly(const Poly &P){cria(P.getGrau()); copia(P);};
+        Poly(Poly &&P);
         // destrutor
         inline ~Poly(){destroi();};
-};  
+};
+
+#endif // _POLY_H_
